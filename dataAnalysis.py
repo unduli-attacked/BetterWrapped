@@ -26,14 +26,15 @@ def defaultGraphSettings(title="", ylabel="", xlabel="", xticks=None):
 	plt.title(title)
 	plt.ylabel(ylabel)
 	plt.xlabel(xlabel)
-	plt.gca().get_lines()[len(plt.gca().get_lines())-1].set_color('darkslateblue')
+	if len(plt.gca().get_lines()) != 0:
+		plt.gca().get_lines()[len(plt.gca().get_lines())-1].set_color('darkslateblue')
 	plt.show()
 
 # ARTIST GRAPH
 def artistGraph(count=False):
 	yVar = "timesPlayed" if count else "minPlayed"
 	totalArtist = dfStreamingHistory[["artistName", yVar]].groupby("artistName", as_index=False).sum()
-	totalArtist = totalArtist.sort_values(playVar, ignore_index=True, ascending=False)
+	totalArtist = totalArtist.sort_values(yVar, ignore_index=True, ascending=False)
 	print(totalArtist.head(20))
 	totalArtist = totalArtist[totalArtist[yVar] != 0]
 
@@ -59,7 +60,7 @@ def listeningGraph(count=False):
 	print(streamsByDate.info())
 	streamsByDate = streamsByDate[streamsByDate[yVar] != 0]
 	
-	plt.plot(streamsByDate["streamDate"], streamsByDate[yVar], marker='.')
+	plt.plot(streamsByDate["streamDate"], streamsByDate[yVar], marker='.', markersize=3)
 	defaultGraphSettings(title="Listening 2022", ylabel="Number of Plays" if count else "Listening Time (minutes)", xlabel="Date", xticks=np.append(dts.drange(streamsByDate["streamDate"].min(), streamsByDate["streamDate"].max(), timedelta(weeks=4)), dts.date2num(streamsByDate["streamDate"].max())))
 	
 # ARTIST LISTENING GRAPH
@@ -68,7 +69,7 @@ def artistListeningGraph(artistName, count=False):
 	streamsByDate = dfStreamingHistory.loc[dfStreamingHistory["artistName"]==artistName][["streamDate", yVar]].groupby("streamDate", as_index=False).sum()
 	streamsByDate = streamsByDate[streamsByDate[yVar] != 0]
 	
-	plt.plot(streamsByDate["streamDate"], streamsByDate[yVar], marker='.')
+	plt.plot(streamsByDate["streamDate"], streamsByDate[yVar], marker='.', markersize=3)
 	defaultGraphSettings(title="Time Spent Listening to "+artistName, ylabel="Number of Plays" if count else "Listening Time (minutes)", xlabel="Date", xticks=np.append(dts.drange(streamsByDate["streamDate"].min(), streamsByDate["streamDate"].max(), timedelta(weeks=4)), dts.date2num(streamsByDate["streamDate"].max())))
 	
 	
@@ -78,5 +79,8 @@ def songListeningGraph(songName, count=False):
 	streamsByDate = dfStreamingHistory.loc[dfStreamingHistory["trackName"]==songName][["streamDate", yVar]].groupby("streamDate", as_index=False).sum()
 	streamsByDate = streamsByDate[streamsByDate[yVar] != 0]
 	
-	plt.plot(streamsByDate["streamDate"], streamsByDate[yVar], marker='.')
+	plt.plot(streamsByDate["streamDate"], streamsByDate[yVar], marker='.', markersize=3)
 	defaultGraphSettings(title="Time Spent Listening to "+songName, ylabel="Number of Plays" if count else "Listening Time (minutes)", xlabel="Date", xticks=np.append(dts.drange(streamsByDate["streamDate"].min(), streamsByDate["streamDate"].max(), timedelta(weeks=4)), dts.date2num(streamsByDate["streamDate"].max())))
+
+#songGraph(count=True)
+songListeningGraph("Back To Me", count=True)
