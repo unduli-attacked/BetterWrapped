@@ -80,5 +80,3 @@ def songListeningGraph(songName, count=False):
 	
 	plt.plot(streamsByDate["streamDate"], streamsByDate[yVar], marker='.')
 	defaultGraphSettings(title="Time Spent Listening to "+songName, ylabel="Number of Plays" if count else "Listening Time (minutes)", xlabel="Date", xticks=np.append(dts.drange(streamsByDate["streamDate"].min(), streamsByDate["streamDate"].max(), timedelta(weeks=4)), dts.date2num(streamsByDate["streamDate"].max())))
-
-artistListeningGraph("Kapei", count=True)
